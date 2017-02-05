@@ -3,6 +3,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
+import javax.imageio.IIOImage;
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 
@@ -18,7 +19,8 @@ public class JPGEncoder {
 
 		// ImageIO.write((BufferedImage) img.getNative(), "jpg", baos);
 		writer.setOutput(new MemoryCacheImageOutputStream(baos));
-		writer.write((BufferedImage) img.getNative());
+
+		writer.write(null, new IIOImage((BufferedImage) img.getNative(), null, null), param);
 
 		return baos.toByteArray();
 	}
