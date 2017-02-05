@@ -1,18 +1,33 @@
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriter;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 
 public class JPGEncoder {
 
-	byte[] encode(PImage img) throws IOException {
-		ByteArrayOutputStream imgbaso = new ByteArrayOutputStream();
-		ImageIO.write((BufferedImage) img.getNative(), "jpg", imgbaso);
+	byte[] encode(PImage img, float compression) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		
+		ImageWriter writer = ImageIO.getImageWritersByFormatName("jpeg").next();
+		ImageWriteParam param = writer.getDefaultWriteParam();
+		param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+		param.setCompressionQuality(compression);
 
-		return imgbaso.toByteArray();
+		// ImageIO.write((BufferedImage) img.getNative(), "jpg", baos);
+		writer.setOutput(new MemoryCacheImageOutputStream(baos));
+		writer.write((BufferedImage) img.getNative());
+
+		return baos.toByteArray();
 	}
 
-	PImage decode(byte[] imgbytes) throws IOException {
+	byte[] encode(PImage img) throws IOException {
+		return encode(img, 0.5F);
+	}
+
+	PImage decode(byte[] imgbytes) throws IOException, NullPointerException {
 		BufferedImage imgbuf = ImageIO.read(new ByteArrayInputStream(imgbytes));
 		PImage img = new PImage(imgbuf.getWidth(), imgbuf.getHeight(), RGB);
 		imgbuf.getRGB(0, 0, img.width, img.height, img.pixels, 0, img.width);

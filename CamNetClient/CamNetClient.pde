@@ -28,9 +28,10 @@ void keyTyped() {
 		try {
 			println("Getting image to memory");
 			PImage img = cam.get();
+			img.resize(500, 0);
 
 			println("Encoding");
-			byte[] encoded = jpg.encode(img);
+			byte[] encoded = jpg.encode(img, 0.1F);
 
 			println("Writing to server");
 			client.write(encoded);
