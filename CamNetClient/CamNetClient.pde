@@ -11,7 +11,9 @@ void setup() {
 	cam = new Capture(this, Capture.list()[1]);
 	cam.start();
 
-	client = new Client(this, "127.0.0.1", 5204);
+	// String server = "192.168.1.15";
+	String server = "127.0.0.1";
+	client = new Client(this, server, 5204);
 	
 	background(255);
 	println("Starting client");
