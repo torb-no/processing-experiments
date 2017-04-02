@@ -16,6 +16,10 @@ class EditableVertex {
 		this.offset = position;
 	}
 
+	public EditableVertex(float[] pointList) {
+		this(pointList, new PVector(20, 20));
+	}
+
 	// Convert points relative to shape position to absolute positons on sketch
 	// (apply position/offset)
 	private float xO(float x) { return x + offset.x; }
@@ -25,10 +29,6 @@ class EditableVertex {
 	// (remove position/offset)
 	private float xA(float x) { return x - offset.x; }
 	private float yA(float y) { return y - offset.y; }
-
-	public EditableVertex(float[] pointList) {
-		this(pointList, new PVector(20, 20));
-	}
 
 	public void interactiveDisplay() {
 		display();
@@ -44,15 +44,48 @@ class EditableVertex {
 			if (dist(p.x, p.y, xA(mouseX), yA(mouseY)) < CONTROL_CIRLCE_SIZE) {
 				if (mousePressed) {
 					p.x = xA(mouseX);
-					p.y = yA(mouseY);
+					p.y = xA(mouseY);
 					noExistingVerticesEdited = false;
 					fill(255, 200);
 				}
 				else fill(255, 140);
+				// TODO: be able to delte vertices (right click?) (only if more than 3 vertices)
 			}
 			else fill(255, 70);
 			
 			ellipse(xO(p.x), yO(p.y), CONTROL_CIRLCE_SIZE, CONTROL_CIRLCE_SIZE);
+		}
+
+		// TODO: Add new vertex
+		if (noExistingVerticesEdited && mousePressed) {
+			// Algo
+			// Find two closest points
+			// Find the position between them in the ArrayList
+			// And insert the new point between the
+
+			// Find the two closest vectors
+			PVector closestP = points.get(0);
+			PVector secClosestP = points.get(1);
+			int closestI = 0;
+			int secClosestI = 1;
+
+			for (int i = 0; i < points.size(); ++i) {
+				PVector p = points.get(i);
+				if (dist(p.x, p.y, xA(mouseX), yA(mouseY)) < dist(closestP.x, closestP.y, xA(mouseX), yA(mouseY))) {
+					secClosestI = closestI;
+					secClosestP = closestP;
+					closestP = p;
+					closestI = i;
+				}
+				else if (dist(p.x, p.y, xA(mouseX), yA(mouseY)) < dist(secClosestP.x, secClosestP.y, xA(mouseX), yA(mouseY))) {
+					secClosestI = i;
+					secClosestP = p;
+				}
+			}
+
+			int insertIndex = (closestI > secClosestI) ? closestI : secClosestI;
+
+			points.add(insertIndex, new PVector(xA(mouseX), yA(mouseY)));
 		}
 	}
 
@@ -68,3 +101,18 @@ class EditableVertex {
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
