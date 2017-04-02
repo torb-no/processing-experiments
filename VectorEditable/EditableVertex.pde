@@ -56,13 +56,11 @@ class EditableVertex {
 			ellipse(xO(p.x), yO(p.y), CONTROL_CIRLCE_SIZE, CONTROL_CIRLCE_SIZE);
 		}
 
-		// TODO: Add new vertex
+		// Add the vertex
+		// The algorithm here is pretty stupid and does
+		// the wrong thing if you click on a line whose vertices
+		// are further away than unrelated vertices
 		if (noExistingVerticesEdited && mousePressed) {
-			// Algo
-			// Find two closest points
-			// Find the position between them in the ArrayList
-			// And insert the new point between the
-
 			// Find the two closest vectors
 			PVector closestP = points.get(0);
 			PVector secClosestP = points.get(1);
@@ -83,6 +81,7 @@ class EditableVertex {
 				}
 			}
 
+			// Add point between to closest vectors
 			int insertIndex = (closestI > secClosestI) ? closestI : secClosestI;
 
 			points.add(insertIndex, new PVector(xA(mouseX), yA(mouseY)));
