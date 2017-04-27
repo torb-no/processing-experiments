@@ -13,9 +13,9 @@ void setup() {
 
 	// String server = "192.168.1.15";
 	String server = "127.0.0.1";
-	client = new Client(this, server, 5204);
+	client = new Client(this, server, 5203);
 	
-	background(255);
+	background(0);
 	println("Starting client");
 }
 
@@ -33,10 +33,15 @@ void keyTyped() {
 			img.resize(500, 0);
 
 			println("Encoding");
-			byte[] encoded = jpg.encode(img, 0.1F);
+			byte[] jpgBytes = jpg.encode(img, 0.1F);
 
-			println("Writing to server");
-			client.write(encoded);
+			println("Writing file length to server: " + jpgBytes.length);
+			// Taken from: https://processing.org/discourse/beta/num_1192330628.html
+			client.write(jpgBytes.length / 256);
+			client.write(jpgBytes.length % 256);
+
+			println("Writing jpg bytes to server");
+			client.write(jpgBytes);
 		} catch (IOException e) {
 			// Ignore failure to encode
 			println("IOException");
